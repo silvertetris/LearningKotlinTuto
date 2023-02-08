@@ -1,3 +1,3 @@
 package com.example.edu;
 
-class Person(val nsame: String, val age: Int)
+class Person(val name: String, val age: Int)
