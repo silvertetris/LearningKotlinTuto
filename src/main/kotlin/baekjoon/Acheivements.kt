@@ -8,17 +8,19 @@ fun main() {
     var paid: Int
     do {
         practiced = sc.nextInt()
-    } while (practiced !in 0..100000)
+    } while (sc.hasNextInt() && practiced !in 0..100000)
     do {
         paid = sc.nextInt()
-    } while (paid !in 0..100000)
+    } while (sc.hasNextInt() && paid !in 0..100000)
     sc.nextLine()
 
     val actualDays = IntArray(practiced)
     for (i in 0 until practiced) {
-        do {
-            actualDays[i] = sc.nextInt()
-        } while (actualDays[i] !in 0..1000000)
+        if (sc.hasNextInt()) {
+            do {
+                actualDays[i] = sc.nextInt()
+            } while (actualDays[i] !in 0..1000000)
+        }
     }
     sc.close()
 
@@ -31,9 +33,8 @@ fun main() {
             currentStreakLength -= paidDays // 지불일수를 제외한 연속 일 수
             if (actualDays[i + 1] - actualDays[i] > paid) {
                 startPoint = i
-                longestStreakLength= maxOf(longestStreakLength, paid+1)
             } else {
-                longestStreakLength = maxOf(longestStreakLength, currentStreakLength + paid-1)
+                longestStreakLength = maxOf(longestStreakLength, currentStreakLength + paid - 1)
             }
         }
         return longestStreakLength
