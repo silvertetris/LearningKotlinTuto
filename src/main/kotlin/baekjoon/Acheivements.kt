@@ -2,6 +2,7 @@ package baekjoon
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.math.max
 
 fun main() {
     val br = BufferedReader(InputStreamReader(System.`in`))
@@ -25,24 +26,33 @@ fun main() {
             num++
         }
     } while (actualDays[num-1] !in 0..1000000)
+
     //begins logic
     var longestStreakLength = 0//최대 길이
     for (startPoint in 0 until practiced - 1) {
-        var remainPaid = paid //남아있는 지불 기회
-        var temp = 0
+        var remainPaid = paid //남아있는 지불 기회 startPoint가 올라갈떄마다 remainPaid는 초기화 되어야함.
         for (i in startPoint until practiced - 1) {
             var currentStreakLength = actualDays[i + 1] - actualDays[i] + 1 //지불 여부 상관없이 연속일 수
-            if ((currentStreakLength - 2) > remainPaid) {//차이가 paid보다 클 경우 로직.
-                longestStreakLength = maxOf(longestStreakLength, temp + remainPaid + 1)
+            if ((currentStreakLength - 2) > remainPaid&&(currentStreakLength-2>0)) {//차이가 paid보다 클 경우 로직. 배제
+                longestStreakLength = maxOf(longestStreakLength, i-startPoint+paid+1)
                 startPoint + 1
                 break
             }
-            val actualPaid = minOf(currentStreakLength - 2, paid)//실제 지불한 일 수 , paid가 최대가 되어야함으로 minOf를 통해 구함
-            currentStreakLength -= remainPaid // 지불일수를 제외한 연속 일 수
-            remainPaid -= actualPaid//사용한 지불 횟수 ( 남은 지불 횟수)
-            temp += (currentStreakLength + actualPaid)
-            longestStreakLength = maxOf(longestStreakLength, temp + remainPaid) //기존 , 제외한 연속 일수 + 실제 지불 수 , 최대값 구하기
+            val haveToPay = currentStreakLength-2//지불해야하는 일 수
+            if(haveToPay>remainPaid) {//남은 일 수 보다 지불해야 하는 일 수 가 많은 경우. 배제
+                longestStreakLength= maxOf(longestStreakLength, i-startPoint+paid+1)
+                startPoint+1
+                break
+            }
+
+            if((remainPaid==0)&&(currentStreakLength-2>0)) {//남은 지불일 수가 남지 않았지만 지불해야할 날이 있을 경우
+                longestStreakLength=maxOf(longestStreakLength, i-startPoint+paid+1)
+                startPoint+1
+                break
+            }
+            remainPaid-=haveToPay
         }
     }
+    if(longestStreakLength==0) longestStreakLength=practiced+paid
     println(longestStreakLength)
 }
