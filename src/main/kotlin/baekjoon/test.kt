@@ -1,45 +1,43 @@
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.floor
 
 fun main() {
     val sc = Scanner(System.`in`)
-    val result = ArrayList<String>()
-    while (true) {
-        val input = sc.nextLine()
-        if (input == "-1 00:00:00") break
+    var word: ArrayList<String> = ArrayList<String>()
+    var sentence: ArrayList<String> = ArrayList<String>()
 
-        val parts = input.split(" ")
-        val targetAngle = parts[0].toInt()
-        val timeParts = parts[1].split(":").map { it.toInt() }
-        var hour = timeParts[0]
-        var minute = timeParts[1]
-        var second = timeParts[2]
-
-        var currentTimeInSeconds = hour * 3600 + minute * 60 + second
-
-        while (true) {
-            // Calculate the angles at the current time
-            val hourAngle = ((hour % 12) * 30 + (minute / 2.0) + (second / 120.0)) % 360
-            val minuteAngle = ((minute * 6) + (second / 10.0)) % 360
-            val calculatedAngle = (minuteAngle - hourAngle + 360) % 360
-
-            // If the calculated angle matches the target, stop
-            if (floor(calculatedAngle) == targetAngle.toDouble()) break
-
-            // Increment time by one second
-            currentTimeInSeconds++
-            hour = (currentTimeInSeconds / 3600) % 24
-            minute = (currentTimeInSeconds % 3600) / 60
-            second = currentTimeInSeconds % 60
-        }
-
-        // Format the time
-        result.add(String.format("%02d:%02d:%02d", hour, minute, second))
+    for (i in 0 until 20) {
+        word.add(sc.nextLine())
+        if (word[i][0].code == 35 && word[i][1].code == 35) break;
     }
 
-    // Print all results
-    for (res in result) {
-        println(res)
+    for (i in 0..100) {
+        sentence.add(sc.nextLine())
+        if (sentence[i][0].code == 35) break;
+    }
+    for (i in 0 until sentence.size - 1) { //문장의 배열
+        for (j in 0 until sentence[i].length - 3) {//한문장의 길이
+            for (k in 0 until word.size - 1) {//단어의 배열
+                if (sentence[i][j] == word[k][0]) { //시작 지점 발견시
+                    //끝지점까지 있는지 찾아야함 j로 찾아야함
+                    var temp: Int = j + 1
+                    while (temp < sentence[i].length - 3) {
+                        if ((sentence[i][temp].code !in 65..90) && (sentence[i][temp].code !in 97..122)) {
+                            break
+                        }
+                        if (sentence[i][temp] == word[k][1]) {
+                            for (p in j + 1 until temp) {
+                                var toCharArray = sentence[i].toCharArray()
+                                toCharArray[p] = '*'
+                                sentence[i] = String(toCharArray)
+                            }
+                        }
+                        temp++
+                    }
+                }
+            }
+        }
+    }
+    for(i in 0 until sentence.size - 1) {
+        println(sentence[i])
     }
 }
