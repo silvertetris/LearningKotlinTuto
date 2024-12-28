@@ -1,5 +1,4 @@
 import java.util.*
-import kotlin.math.abs
 
 fun main() {
     val sc = Scanner(System.`in`)
@@ -28,7 +27,7 @@ fun main() {
                 maxCount++
             }
         }
-        if(letterCount.max()==0) {
+        if (letterCount.max() == 0) {
             result.add("0 ${inputText[i]}")
             continue
         }
@@ -37,7 +36,7 @@ fun main() {
             continue
         }
         var distance = (letterCount.indexOf(letterCount.max()) + 65) - 'E'.code//차이
-        if(distance<0) {
+        if (distance < 0) {
             distance += 26
         }
         val toCharArray: CharArray = inputText[i].toCharArray()
