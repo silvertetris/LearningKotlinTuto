@@ -1,53 +1,52 @@
-import kotlin.system.measureNanoTime
-
+import java.math.BigInteger
+import kotlin.math.min
 
 fun main() {
-    val n = 1_000_000
-    val wealthList = List(n) { (1..1_000_000_000).random().toLong() }
-    fun alternativeApproach(wealth: List<Long>): Double {
-        val sortedWealth = wealth.sortedDescending()
-        val sum = sortedWealth.sum()
-        val avgProperty = sum.toDouble() / wealth.size
-        var bigSum = 0.0
-        var bigNum = 0
+    val br = System.`in`.bufferedReader()
+    val n = br.readLine().toInt()
+    val arr = br.readLine().split(" ").map { it.toInt() }.toTypedArray()
 
-        for (i in sortedWealth.indices) {
-            if (sortedWealth[i] > avgProperty) {
-                bigSum += sortedWealth[i]
-            } else {
-                bigNum = i
-                break
+    // 세그먼트 트리 초기화 (Pair로 구간 합과 최솟값을 함께 관리)
+    val tree = Array(4 * n) { Pair(BigInteger.ZERO, Int.MAX_VALUE) }
+
+    fun buildTree(node: Int, left: Int, right: Int) {
+        if (left == right) {
+            tree[node] = Pair(arr[left].toBigInteger(), arr[left])
+        } else {
+            val mid = (left + right) / 2
+            buildTree(2 * node, left, mid)
+            buildTree(2 * node + 1, mid + 1, right)
+            val sum = tree[2 * node].first + tree[2 * node + 1].first
+            val minVal = min(tree[2 * node].second, tree[2 * node + 1].second)
+            tree[node] = Pair(sum, minVal)
+        }
+    }
+
+    buildTree(1, 0, n - 1)
+
+    fun query(node: Int, left: Int, right: Int, qLeft: Int, qRight: Int): Pair<BigInteger, Int> {
+        if (qRight < left || right < qLeft) return Pair(BigInteger.ZERO, Int.MAX_VALUE)
+        if (qLeft <= left && right <= qRight) return tree[node]
+        val mid = (left + right) / 2
+        val leftResult = query(2 * node, left, mid, qLeft, qRight)
+        val rightResult = query(2 * node + 1, mid + 1, right, qLeft, qRight)
+        return Pair(leftResult.first + rightResult.first, min(leftResult.second, rightResult.second))
+    }
+
+    var maxVal = BigInteger.ZERO
+    var inx = Pair(0, 0)
+
+    for (i in 0 until n) {
+        for (j in i until n) {
+            val (sum, minVal) = query(1, 0, n - 1, i, j)
+            val score = sum * minVal.toBigInteger()
+            if (score > maxVal) {
+                maxVal = score
+                inx = Pair(i + 1, j + 1)
             }
         }
-
-        val y = (bigSum / sum)
-        val x = (bigNum.toDouble() / wealth.size)
-        return (y - x) * 100
     }
 
-    fun greedyApproach(wealth: List<Long>): Double {
-        val sortedWealth = wealth.sortedDescending()
-        val totalWealth = sortedWealth.sum()
-        var bigSum = 0L
-        var maxDifference = 0.0
-
-        for (i in sortedWealth.indices) {
-            bigSum += sortedWealth[i]
-            val y = bigSum.toDouble() / totalWealth
-            val x = (i + 1).toDouble() / wealth.size
-            maxDifference = maxOf(maxDifference, y - x)
-        }
-
-        return maxDifference * 100
-    }
-
-    val time1 = measureNanoTime { println("1: ${greedyApproach(wealthList)}") }
-    val time2 = measureNanoTime { println("2: ${alternativeApproach(wealthList)}") }
-
-    println("1 Time: ${time1 / 1_000_000.0} ms")
-    println("2 Time: ${time2 / 1_000_000.0} ms")
+    println(maxVal)
+    println("${inx.first} ${inx.second}")
 }
-
-
-
-
