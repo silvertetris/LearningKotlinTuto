@@ -1,23 +1,21 @@
 import kotlin.math.abs
 
 fun main() {
-    val br = System.`in`.bufferedReader()
-    val n = br.readLine().toInt()
-    val arr: Array<Pair<Int, Int>> = Array(n) { Pair(0, 0) }
+    val n = readln().toInt()
+    val arr = Array(n) { IntArray(2) }
+    val dp = Array(n) { IntArray(2) }
     for (i in 0 until n) {
-        val temp = br.readLine().trim().split(" ").map { it.toInt() }
-        arr[i] = Pair(temp[0], temp[1])
+        arr[i] = readln().split(" ").map { it.toInt() }.toIntArray()
     }
-
-    fun dp(index: Int, line: Int, rec: Boolean): Int {
-        if (index == n) return 0
-        if (rec) {
-            val sum = arr[index].first + abs(line - arr[index].second)
-            return maxOf(sum + dp(index + 1, arr[index].second, false), sum+dp(index + 1, arr[index].second, true))
-        } else {
-            val sum = arr[index].second + abs(line - arr[index].first)
-            return maxOf(sum + dp(index + 1, arr[index].first, true), sum+dp(index + 1, arr[index].first, false))
-        }
+    dp[0][0] = arr[0][0]
+    dp[0][1] = arr[0][1]
+    for (i in 1 until n) {
+        dp[i][0] = maxOf(
+            dp[i - 1][0] + abs(arr[i - 1][1] - arr[i][1]), dp[i - 1][1] + abs(arr[i - 1][0] - arr[i][1])
+        ) + arr[i][0]
+        dp[i][1] = maxOf(
+            dp[i - 1][0] + abs(arr[i - 1][1] - arr[i][0]), dp[i - 1][1] + abs(arr[i - 1][0] - arr[i][0])
+        ) + arr[i][1]
     }
-    print(maxOf(dp(1, arr[0].first, true) + arr[0].second, dp(1, arr[0].second, false) + arr[0].first))
+    print(maxOf(dp[n - 1][0], dp[n - 1][1]))
 }
