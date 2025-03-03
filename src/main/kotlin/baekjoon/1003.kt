@@ -1,29 +1,21 @@
 fun main() {
-    val t = readln().toInt()
-    var arr = Array(41) {0L}
-    fun dp(num:Int):Long {
-        if(num==0) {
-            ++arr[0]
-            return 0
-        }
-        else if(num==1) {
-            ++arr[1]
-            return 1
-        }
-        else if(arr[num]!=0L) {
-            return arr[num]
-        }
-        else {
-            arr[num] = dp(num-1) + dp(num-2)
-            return arr[num]
-        }
+    val br = System.`in`.bufferedReader()
+    val bw = System.out.bufferedWriter()
+    val t = br.readLine().toInt()
+    val zero = Array(41) { 0 }
+    val one = Array(41) { 0 }
+    zero[0] = 1
+    zero[1] = 0
+    one[0] = 0
+    one[1] = 1
+    for(i in 2..40) {
+        zero[i] = zero[i - 1] + zero[i - 2]
+        one[i] = one[i - 1] + one[i - 2]
     }
-    val result = StringBuilder()
-    for(i in 0 until t) {
-        val n = readln().toInt()
-        dp(n)
-        result.append("${arr[0]} ${arr[1]}\n")
-        arr= Array(41){0}
+    repeat(t) {
+        val n = br.readLine().toInt()
+        bw.write("${zero[n]} ${one[n]}\n")
     }
-    print(result)
+    bw.flush()
+    bw.close()
 }
