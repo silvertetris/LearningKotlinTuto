@@ -1,37 +1,49 @@
+import java.util.*
 import kotlin.math.abs
 
 fun main() {
-    val br = System.`in`.bufferedReader()
+    val sc = Scanner(System.`in`)
     val bw = System.out.bufferedWriter()
-    val n = br.readLine().toInt()
-    val arr = br.readLine().split(" ").map { it.toInt() }.toTypedArray()
-    var pair = Pair(0, 0)
-    var result = Int.MAX_VALUE
-    if((arr[0]<0 && arr[n-1]<0) || (arr[0]>0 && arr[n-1]>0)) {
-        if(abs(arr[0]+arr[1]) > abs(arr[n-1]+arr[n-2])) {
-            print("${arr[n-2]} ${arr[n-1]}")
-        } else {
-            print("${arr[0]} ${arr[1]}")
+    val n = sc.nextLine().toInt()
+    val arr = IntArray(n)
+    var pair = Pair(0,0)
+    var ans = Int.MAX_VALUE
+    var negativeIndex = 0
+    for (i in 0 until n) {
+        arr[i] = sc.nextInt()
+        if (arr[i] < 0) {
+            negativeIndex = i
         }
-        return
     }
-    for (i in arr.indices - 2) {
-        var l = i + 1
-        var r = n - 1
-        while (l <= r) {
-            val mid = (l + r) / 2
-            if (arr[mid] + arr[i] <= 0) {
-                l = mid + 1
-            } else {
-                r = mid - 1
+    if (arr[0] >= 0 && arr[1] >= 0) {
+        bw.write("${arr[0]} ${arr[1]}")
+    } else if (arr[n - 2] <= 0 && arr[n - 1] <= 0) {
+        bw.write("${arr[n - 2]} ${arr[n - 1]}")
+    } else {//이 코드가 투포인터 + 이분탐색
+        for (i in 0..negativeIndex) {
+            var l = i + 1 //혹시 반대편이 양수가 아니여도 음수끼리 더하는 방안이 가장 0과 가까울 수가 있음
+            var r = n - 1
+            while(l<=r) {
+                val mid = (l + r) / 2
+                if(arr[i] + arr[mid] ==0) {
+                    bw.write("${arr[i]} ${arr[mid]}")
+                    bw.flush()
+                    return
+                }
+                if(abs(arr[i]+arr[mid]) < ans) {
+                    ans = abs(arr[i]+arr[mid])
+                    pair = Pair(arr[i], arr[mid])
+                }
+                if(arr[i]+arr[mid] < 0) {
+                    l = mid + 1
+                }
+                else {
+                    r = mid - 1
+                }
             }
         }
-        if (abs(arr[l - 1] + arr[i]) < result) {
-            result = abs(arr[l - 1] + arr[i])
-            pair = Pair(arr[i], arr[l - 1])
-        }
+        bw.write("${pair.first} ${pair.second}")
     }
-    bw.write("${pair.first} ${pair.second}")
     bw.flush()
     bw.close()
 }
