@@ -1,31 +1,35 @@
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-
-
 fun main() {
-    val reader = BufferedReader(InputStreamReader(System.`in`))
-    val writer = BufferedWriter(OutputStreamWriter(System.out))
+    val reader = System.`in`.bufferedReader()
+    val bw = System.out.bufferedWriter()
     val n = reader.readLine().toInt()
-    val a = reader.readLine().split(" ").map { it.toLong() }.toTypedArray()
-    val b = reader.readLine().split(" ").map { it.toLong() }.toTypedArray()
-    val q = reader.readLine().toInt()
-    val w = reader.readLine().split(" ").map { it.toInt() }.toTypedArray()
-    reader.close()
-    val dif = MutableList(n) { 0L }
+    val top = reader.readLine().split(" ").map { it.toLong() }
+    val size = reader.readLine().split(" ").map { it.toLong() }.toMutableList()
+
     for (i in 0 until n) {
-        dif[i] = a[i] - b[i]
-    }
-    for (i in 0 until q) {
-        var cnt = 0
-        for (j in 0 until n) {
-            if (dif[j] < w[i]) {
-                break
-            } else cnt++
+        size[i] = top[i] - size[i]
+        if(i>0) {
+            size[i] = minOf(size[i], size[i - 1])
         }
-        writer.write("${cnt}\n")
     }
-    writer.flush()
-    writer.close()
+
+    val q = reader.readLine().toInt()
+    val now = reader.readLine().split(" ").map { it.toLong() }.toMutableList()
+
+    for(i in 0 until q) {
+        var l = 0
+        var r = n - 1
+        var m: Int
+
+        while (l <= r) {
+            m = (l + r) / 2
+            if (size[m] < now[i]) {
+                r = m - 1
+            } else {
+                l = m + 1
+            }
+        }
+        bw.write("$l\n")
+    }
+    bw.flush()
+    bw.close()
 }
