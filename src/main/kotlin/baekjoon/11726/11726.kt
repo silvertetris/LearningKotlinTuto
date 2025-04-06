@@ -3,6 +3,10 @@ fun main() {
     val dp = IntArray(n+1) {0}
 
     dp[1] = 1
+    if(n==1) {
+        print(1)
+        return
+    }
     dp[2] = 2
 
     for(i in 3 ..n) {
