@@ -1,7 +1,6 @@
 fun main() {
     val br = System.`in`.bufferedReader()
     val n = br.readLine().toInt()
-<<<<<<< HEAD
     val arr:Array<Pair<Long, Long>> = Array(n) { Pair(0, 0) }
 
     for(i in 0 until n) {
@@ -19,7 +18,6 @@ fun main() {
         }
     }
     print(cnt)
-=======
     val a = br.readLine().split(" ").map { it.toInt() }
     /*
     #1. states/ subproblems
@@ -51,5 +49,4 @@ fun main() {
         ans = maxOf(ans, Ldp[i] + Rdp[i] -1)
     }
     print(ans)
->>>>>>> 6b8b67f568d4a104dd785c88e13a2c8c66d240fa
 }
