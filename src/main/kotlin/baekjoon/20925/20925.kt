@@ -31,7 +31,7 @@ fun main() {
             for (k in 0 until n) { //옮길 경우 (현재 사냥터 j 에서 k로)
                 if (k == i) continue //같은 사냥터 제외
                 if (j + time[i][k] <= t) { //knapsack (제한된 사간에서 최대 경험치 찾기)
-                    if (dp[i][j] >= c[k]) {
+                    if (dp[i][j] >= c[k]) { //최소 입장컷보단 높아야함
                         dp[k][j + time[i][k]] = maxOf(dp[k][j + time[i][k]], dp[i][j])
                     }
                 }
