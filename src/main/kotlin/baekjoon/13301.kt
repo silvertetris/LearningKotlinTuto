@@ -2,7 +2,7 @@ import java.math.BigInteger
 
 fun main() {
     val n = readln().toInt()
-    val arr = Array(41) { 0.toBigInteger() }
+    val arr = Array(81) { 0.toBigInteger() }
     fun dp(num: Int): BigInteger {
         if (num == 0 || num == 1) {
             return num.toBigInteger()
